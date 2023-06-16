@@ -28,6 +28,8 @@ function wp_todo_plugin_register_activation()
 {
 //	var_dump( 'activation' );
 //	exit();
+	do_action('wp_todo_plugin_activated', 'hello', 'world');
+
 }
 
 register_deactivation_hook(
@@ -51,3 +53,22 @@ function wp_todo_plugin_register_uninstall()
 //	var_dump( 'uninstall' );
 //	exit();
 }
+
+// Action Hook
+
+//add_action('wp_todo_plugin_activated', 'wp_todo_plugin_create_table', 10, 2);
+//
+//function wp_todo_plugin_create_table($f, $s) {
+//	var_dump( 'table created' );
+//	var_dump( $f);
+//	var_dump( $s);
+//	exit();
+//}
+
+add_action('save_post', function ($postId, $post) {
+	var_dump('first');
+}, 100, 2);
+
+add_action('save_post', function ($postId, $post) {
+	var_dump('second');
+}, 101, 2);
