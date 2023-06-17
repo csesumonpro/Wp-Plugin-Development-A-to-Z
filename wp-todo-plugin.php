@@ -72,3 +72,25 @@ add_action('save_post', function ($postId, $post) {
 add_action('save_post', function ($postId, $post) {
 	var_dump('second');
 }, 101, 2);
+
+
+function wp_todo_plugin_filter_hook_test()
+{
+	$data = 'Hello World';
+	$data = apply_filters('wp_todo_plugin_our_custom_hook_name', $data, 'CleanCode');
+	echo $data;
+}
+
+add_filter('wp_todo_plugin_our_custom_hook_name',  'wp_todo_plugin_filter_hook_test_2', 10, 2);
+
+function wp_todo_plugin_filter_hook_test_2($data, $name)
+{
+	$data = ' modified data' . $name;
+	return $data;
+}
+
+remove_filter('wp_todo_plugin_our_custom_hook_name', 'wp_todo_plugin_filter_hook_test_2');
+
+wp_todo_plugin_filter_hook_test();
+
+exit();
