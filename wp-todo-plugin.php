@@ -19,78 +19,51 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Domain Path:       /languages
  */
 
-register_activation_hook(
-	__FILE__,
-	'wp_todo_plugin_register_activation'
-);
 
-function wp_todo_plugin_register_activation()
+
+add_action('admin_menu', 'wp_todo_plugin_menu');
+
+function wp_todo_plugin_menu()
 {
-//	var_dump( 'activation' );
-//	exit();
-	do_action('wp_todo_plugin_activated', 'hello', 'world');
+	add_menu_page(
+		__('WP Todo Plugin', 'wp-todo-plugin'),
+		__('Todos', 'wp-todo-plugin'),
+		'manage_options',
+		'wp-todo-plugin',
+		'wp_todo_plugin_page',
+		'dashicons-list-view',
+		10);
 
+	add_submenu_page('wp-todo-plugin',
+		__('Add New Todo', 'wp-todo-plugin'),
+		__('Add New', 'wp-todo-plugin'),
+		'manage_options',
+		'wp-todo-plugin-new',
+		'wp_todo_plugin_submenu');
+
+	add_users_page(
+		__( 'Wp Todo Users', 'wp-todo-plugin' ),
+		__( 'Wp Todo Users', 'wp-todo-plugin' ),
+		'manage_options',
+		'wp_todo_plugin_user_sub_menu',
+		'wp_to_plugin_custom_submenu_for_user_menu'
+	);
 }
 
-register_deactivation_hook(
-	__FILE__,
-	'wp_todo_plugin_register_deactivation'
-);
 
-function wp_todo_plugin_register_deactivation()
+function wp_todo_plugin_page()
 {
-//	var_dump( 'deactivation' );
-//	exit();
+	echo  '<h1>Todo List</h1>';
 }
 
-register_uninstall_hook(
-	__FILE__,
-	'wp_todo_plugin_register_uninstall'
-);
 
-function wp_todo_plugin_register_uninstall()
+function wp_todo_plugin_submenu()
 {
-//	var_dump( 'uninstall' );
-//	exit();
+	echo  '<h1>Add New Todo</h1>';
 }
 
-// Action Hook
 
-//add_action('wp_todo_plugin_activated', 'wp_todo_plugin_create_table', 10, 2);
-//
-//function wp_todo_plugin_create_table($f, $s) {
-//	var_dump( 'table created' );
-//	var_dump( $f);
-//	var_dump( $s);
-//	exit();
-//}
-
-add_action('save_post', function ($postId, $post) {
-	var_dump('first');
-}, 100, 2);
-
-add_action('save_post', function ($postId, $post) {
-	var_dump('second');
-}, 101, 2);
-
-
-function wp_todo_plugin_filter_hook_test()
+function wp_to_plugin_custom_submenu_for_user_menu()
 {
-	$data = 'Hello World';
-	$data = apply_filters('wp_todo_plugin_our_custom_hook_name', $data, 'CleanCode');
-	echo $data;
+echo  '<h1>My Plugin Users</h1>';
 }
-
-add_filter('wp_todo_plugin_our_custom_hook_name',  'wp_todo_plugin_filter_hook_test_2', 10, 2);
-
-function wp_todo_plugin_filter_hook_test_2($data, $name)
-{
-	$data = ' modified data' . $name;
-	return $data;
-}
-
-remove_filter('wp_todo_plugin_our_custom_hook_name', 'wp_todo_plugin_filter_hook_test_2');
-
-wp_todo_plugin_filter_hook_test();
-
-exit();
