@@ -67,3 +67,28 @@ function wp_to_plugin_custom_submenu_for_user_menu()
 {
 echo  '<h1>My Plugin Users</h1>';
 }
+
+
+add_shortcode('wp-todo-plugin', 'wp_todo_plugin_shortcode');
+
+function wp_todo_plugin_shortcode ($atts = [], $content = null)
+{
+
+	$atts = shortcode_atts(
+		array(
+			'width' => '20',
+			'height' => '20',
+			'url' => 'https://picsum.photos/200/300',
+		),
+		$atts,
+		'wp-todo-plugin'
+	);
+
+	$width = $atts['width']."px";
+	$height = $atts['height']."px";
+	$url = $atts['url'];
+
+	$content .= '<img src="' . $url . '" width="' . $width . '" height="' . $height . '" alt="image">';
+
+	return do_shortcode($content);
+}
