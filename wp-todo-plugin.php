@@ -19,76 +19,54 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Domain Path:       /languages
  */
 
+add_action('admin_init', function () {
+	register_setting('writing', 'wp_todo_plugin_site_key');
+	register_setting('writing', 'wp_todo_plugin_writing_selects');
 
-
-add_action('admin_menu', 'wp_todo_plugin_menu');
-
-function wp_todo_plugin_menu()
-{
-	add_menu_page(
-		__('WP Todo Plugin', 'wp-todo-plugin'),
-		__('Todos', 'wp-todo-plugin'),
-		'manage_options',
-		'wp-todo-plugin',
-		'wp_todo_plugin_page',
-		'dashicons-list-view',
-		10);
-
-	add_submenu_page('wp-todo-plugin',
-		__('Add New Todo', 'wp-todo-plugin'),
-		__('Add New', 'wp-todo-plugin'),
-		'manage_options',
-		'wp-todo-plugin-new',
-		'wp_todo_plugin_submenu');
-
-	add_users_page(
-		__( 'Wp Todo Users', 'wp-todo-plugin' ),
-		__( 'Wp Todo Users', 'wp-todo-plugin' ),
-		'manage_options',
-		'wp_todo_plugin_user_sub_menu',
-		'wp_to_plugin_custom_submenu_for_user_menu'
+	add_settings_section(
+		'wp_todo_settings_section_writing',
+		'Site Key', 'wp_todo_plugin_settings_section_writing',
+		'writing'
 	);
-}
-
-
-function wp_todo_plugin_page()
-{
-	echo  '<h1>Todo List</h1>';
-}
-
-
-function wp_todo_plugin_submenu()
-{
-	echo  '<h1>Add New Todo</h1>';
-}
-
-
-function wp_to_plugin_custom_submenu_for_user_menu()
-{
-echo  '<h1>My Plugin Users</h1>';
-}
-
-
-add_shortcode('wp-todo-plugin', 'wp_todo_plugin_shortcode');
-
-function wp_todo_plugin_shortcode ($atts = [], $content = null)
-{
-
-	$atts = shortcode_atts(
-		array(
-			'width' => '20',
-			'height' => '20',
-			'url' => 'https://picsum.photos/200/300',
-		),
-		$atts,
-		'wp-todo-plugin'
+	add_settings_field(
+		'wp_todo_id_setting_field_id',
+		'Text Input', 'wp_todo_plugin_settings_field_writing',
+		'writing',
+		'wp_todo_settings_section_writing'
 	);
 
-	$width = $atts['width']."px";
-	$height = $atts['height']."px";
-	$url = $atts['url'];
+	add_settings_field(
+		'wp_todo_id_setting_field_id_sd',
+		'Multiple Selects', 'wp_todo_plugin_settings_field_writings',
+		'writing',
+		'wp_todo_settings_section_writing'
+	);
+});
 
-	$content .= '<img src="' . $url . '" width="' . $width . '" height="' . $height . '" alt="image">';
+function wp_todo_plugin_settings_section_writing()
+{
+//	$site_key = get_option('wp_todo_plugin_site_key');
+//	?>
+<!--	<input type="text" name="wp_todo_plugin_site_key" value="--><?php //echo $site_key; ?><!--">-->
+<!--	--><?php
+}
 
-	return do_shortcode($content);
+function wp_todo_plugin_settings_field_writing()
+{
+	$site_key = get_option('wp_todo_plugin_site_key');
+	?>
+	<input type="text" name="wp_todo_plugin_site_key" value="<?php echo $site_key; ?>">
+	<?php
+}
+
+
+function wp_todo_plugin_settings_field_writings()
+{
+	$value = get_option('wp_todo_plugin_writing_selects');
+	?>
+	<select name="wp_todo_plugin_writing_selects">
+		<option value="one" selected="<?php if ($value === 'one' ? 'selected' : '')?>">One</option>
+		<option value="two" selected="<?php if ($value === 'two' ? 'selected' : '')?>">Two</option>
+	</select>
+	<?php
 }
