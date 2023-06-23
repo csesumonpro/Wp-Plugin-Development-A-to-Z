@@ -19,54 +19,57 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Domain Path:       /languages
  */
 
-add_action('admin_init', function () {
-	register_setting('writing', 'wp_todo_plugin_site_key');
-	register_setting('writing', 'wp_todo_plugin_writing_selects');
+class WP_Todo_Plugin_Meta_Box {
 
-	add_settings_section(
-		'wp_todo_settings_section_writing',
-		'Site Key', 'wp_todo_plugin_settings_section_writing',
-		'writing'
-	);
-	add_settings_field(
-		'wp_todo_id_setting_field_id',
-		'Text Input', 'wp_todo_plugin_settings_field_writing',
-		'writing',
-		'wp_todo_settings_section_writing'
-	);
+	/**
+	 * Set up and add the meta box.
+	 */
+	public static function add() {
+		$screens = [ 'post', 'page' ];
+		foreach ( $screens as $screen ) {
+			add_meta_box(
+				'wporg_box_id',          // Unique ID
+				'Custom Meta Box Title', // Box title
+				[ self::class, 'html' ],   // Content callback, must be of type callable
+				$screen                  // Post type
+			);
+		}
+	}
 
-	add_settings_field(
-		'wp_todo_id_setting_field_id_sd',
-		'Multiple Selects', 'wp_todo_plugin_settings_field_writings',
-		'writing',
-		'wp_todo_settings_section_writing'
-	);
-});
 
-function wp_todo_plugin_settings_section_writing()
-{
-//	$site_key = get_option('wp_todo_plugin_site_key');
-//	?>
-<!--	<input type="text" name="wp_todo_plugin_site_key" value="--><?php //echo $site_key; ?><!--">-->
-<!--	--><?php
+	/**
+	 * Save the meta box selections.
+	 *
+	 * @param int $post_id  The post ID.
+	 */
+	public static function save( int $post_id ) {
+		if ( array_key_exists( 'wp_todo_plugin_field', $_POST ) ) {
+			update_post_meta(
+				$post_id,
+				'wp_todo_plugin_field',
+				$_POST['wp_todo_plugin_field']
+			);
+		}
+	}
+
+
+	/**
+	 * Display the meta box HTML to the user.
+	 *
+	 * @param WP_Post $post   Post object.
+	 */
+	public static function html( $post ) {
+		$value = get_post_meta( $post->ID, 'wp_todo_plugin_field', true );
+		?>
+        <label for="wporg_field">Description for this field</label>
+        <select name="wp_todo_plugin_field" id="wporg_field" class="postbox">
+            <option value="">Select something...</option>
+            <option value="something" <?php selected( $value, 'something' ); ?>>Something</option>
+            <option value="else" <?php selected( $value, 'else' ); ?>>Else</option>
+        </select>
+		<?php
+	}
 }
 
-function wp_todo_plugin_settings_field_writing()
-{
-	$site_key = get_option('wp_todo_plugin_site_key');
-	?>
-	<input type="text" name="wp_todo_plugin_site_key" value="<?php echo $site_key; ?>">
-	<?php
-}
-
-
-function wp_todo_plugin_settings_field_writings()
-{
-	$value = get_option('wp_todo_plugin_writing_selects');
-	?>
-	<select name="wp_todo_plugin_writing_selects">
-		<option value="one" selected="<?php if ($value === 'one' ? 'selected' : '')?>">One</option>
-		<option value="two" selected="<?php if ($value === 'two' ? 'selected' : '')?>">Two</option>
-	</select>
-	<?php
-}
+add_action( 'add_meta_boxes', [ 'WP_Todo_Plugin_Meta_Box', 'add' ]);
+add_action( 'save_post', [ 'WP_Todo_Plugin_Meta_Box', 'save' ] );
