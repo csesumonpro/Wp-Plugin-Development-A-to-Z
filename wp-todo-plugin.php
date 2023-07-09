@@ -19,40 +19,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Domain Path:       /languages
  */
 
-/*
-* Plugin Name: Course Taxonomy
-* Description: A short example showing how to add a taxonomy called Course.
-* Version: 1.0
-* Author: developer.wordpress.org
-* Author URI: https://codex.wordpress.org/User:Aternus
-*/
 
-function wp_todo_register_taxonomy_course() {
-	$labels = array(
-		'name'              => __( 'Courses'),
-		'singular_name'     => __( 'Course'),
-		'search_items'      => __( 'Search Courses' ),
-		'all_items'         => __( 'All Courses' ),
-		'parent_item'       => __( 'Parent Course' ),
-		'parent_item_colon' => __( 'Parent Course:' ),
-		'edit_item'         => __( 'Edit Course' ),
-		'update_item'       => __( 'Update Course' ),
-		'add_new_item'      => __( 'Add New Course' ),
-		'new_item_name'     => __( 'New Course Name' ),
-		'menu_name'         => __( 'Course' ),
-	);
-	$args   = array(
-		'hierarchical'      => false, // make it hierarchical (like categories)
-		'labels'            => $labels,
-		'show_ui'           => true,
-		'show_admin_column' => true,
-		'query_var'         => true,
-		'rewrite'           => [ 'slug' => 'course' ],
-        'show_in_rest'      => true,
-	);
-	register_taxonomy( 'course', [ 'page', 'post' ], $args );
-}
+add_action('init', function () {
+//	// Users
+//	$user= wp_create_user('sumon', 'sumon', 'sumon@gmail.com');
 
-add_action( 'init', 'wp_todo_register_taxonomy_course' );
+//$update_user = wp_update_user([
+//	'ID' => 4,
+//	'user_url' => 'https://CleanCodeWithSumon.com/'
+//]);
+
+//	var_dump($user);
+//	exit();
+
+	$data = get_user_meta('4', 'wp_todo_key', true);
+
+	var_dump($data);
+	exit();
+
+	exit();
+});
 
 
