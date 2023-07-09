@@ -20,24 +20,32 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 
+
+function wp_todo_user_permission_check(){
+	if (current_user_can('read')) {
+		echo "Permitted";
+	} else {
+		echo "not permitted";
+	}
+}
+
 add_action('init', function () {
-//	// Users
-//	$user= wp_create_user('sumon', 'sumon', 'sumon@gmail.com');
 
-//$update_user = wp_update_user([
-//	'ID' => 4,
-//	'user_url' => 'https://CleanCodeWithSumon.com/'
-//]);
-
-//	var_dump($user);
+//	$role = get_role( 'simple_role' );
+	wp_todo_user_permission_check();
+	exit();
+//
 //	exit();
 
-	$data = get_user_meta('4', 'wp_todo_key', true);
-
-	var_dump($data);
-	exit();
-
-	exit();
+//	add_role(
+//		'simple_role',
+//		'Simple Role',
+//		array(
+//			'read'         => true,
+//			'edit_posts'   => true,
+//			'upload_files' => true,
+//		),
+//	);
 });
 
 
