@@ -20,32 +20,28 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 
+// How Does WordPress Hooks Work Behind the Scene
 
-function wp_todo_user_permission_check(){
-	if (current_user_can('read')) {
-		echo "Permitted";
-	} else {
-		echo "not permitted";
-	}
+
+include_once plugin_dir_path(__FILE__) . 'custom-hook.php';
+
+
+register_activation_hook(__FILE__, 'wp_todo_plugin_activation');
+
+function wp_todo_plugin_activation(){
+	// Do something
+	custom_do_action('wp_todo_plugin_activated', 'Hello World', 'second');
+//	var_dump('wp_todo_plugin_activation');
+	exit();
 }
 
-add_action('init', function () {
-
-//	$role = get_role( 'simple_role' );
-	wp_todo_user_permission_check();
-	exit();
-//
-//	exit();
-
-//	add_role(
-//		'simple_role',
-//		'Simple Role',
-//		array(
-//			'read'         => true,
-//			'edit_posts'   => true,
-//			'upload_files' => true,
-//		),
-//	);
-});
+custom_add_action('wp_todo_plugin_activated', function ($data) {
+	var_dump($data);
+	var_dump('from second action 15');
+}, 15);
 
 
+custom_add_action('wp_todo_plugin_activated', function ($data, $second) {
+//	var_dump($data, $second);
+	var_dump('from first action 12');
+}, 12, 2);
