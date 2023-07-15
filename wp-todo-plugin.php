@@ -39,3 +39,38 @@ add_action('admin_enqueue_scripts', function () {
 		)
 	);
 });
+
+
+add_action('wp_ajax_wp_todo_abc', function () {
+
+	if (wp_verify_nonce( $_POST['nonce'], 'wp-todo-plugin-nonce' ) === false) {
+		wp_send_json_error( array(
+			'message' => 'nonce is not valid'
+		) );
+	}
+
+	wp_send_json_success( array(
+		'message' => 'successsss',
+		'response'    => [
+			'abcd' => 'abcd'
+		]
+	) );
+});
+
+add_action('wp_ajax_wp_todo_abc_again' , function () {
+	wp_send_json_success( array(
+		'message' => 'success again',
+		'response'    => [
+			'cars' => ['volvo', 'bmw', 'toyota']
+		]
+	) );
+});
+// Frontend ajax
+add_action('wp_ajax_nopriv_wp_todo_abc_again' , function () {
+	wp_send_json_success( array(
+		'message' => 'success again',
+		'response'    => [
+			'cars' => ['volvo', 'bmw', 'toyota']
+		]
+	) );
+});
