@@ -19,29 +19,23 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Domain Path:       /languages
  */
 
-
-// How Does WordPress Hooks Work Behind the Scene
-
-
-include_once plugin_dir_path(__FILE__) . 'custom-hook.php';
-
-
-register_activation_hook(__FILE__, 'wp_todo_plugin_activation');
-
-function wp_todo_plugin_activation(){
-	// Do something
-	custom_do_action('wp_todo_plugin_activated', 'Hello World', 'second');
-//	var_dump('wp_todo_plugin_activation');
-	exit();
-}
-
-custom_add_action('wp_todo_plugin_activated', function ($data) {
-	var_dump($data);
-	var_dump('from second action 15');
-}, 15);
+define( 'WP_TODO_PLUGIN_VERSION', '1.0.0' );
+define( 'WP_TODO_PLUGIN_FILE', __FILE__ );
+define( 'WP_TODO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'WP_TODO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 
-custom_add_action('wp_todo_plugin_activated', function ($data, $second) {
-//	var_dump($data, $second);
-	var_dump('from first action 12');
-}, 12, 2);
+add_action('admin_enqueue_scripts', function () {
+	wp_enqueue_script( 'wp-todo-plugin', WP_TODO_PLUGIN_URL . 'js/custom.js', array( 'jquery' ), '1.0.0', false );
+	wp_enqueue_style( 'wp-todo-plugin', WP_TODO_PLUGIN_URL . 'css/custom.css', [], '1.0.0' );
+
+	wp_localize_script(
+		'wp-todo-plugin',
+		'wp_todo_plugin',
+		array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => wp_create_nonce( 'wp-todo-plugin-nonce' ),
+			'abcd' => 'abcd'
+		)
+	);
+});
