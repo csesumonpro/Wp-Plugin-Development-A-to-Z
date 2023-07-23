@@ -10,35 +10,19 @@
 	</tr>
 	</thead>
 	<tbody>
+    <?php
+        foreach ($todos as $todo) {
+            ?>
 	<tr>
-		<th scope="row">1</th>
-		<td>Mark</td>
-		<td>Otto</td>
-		<td>[simple_todo id="1"]</td>
+		<th scope="row"><?php esc_html_e($todo->id); ?></th>
+		<td><?php esc_html_e($todo->title); ?></td>
+		<td><?php esc_html_e($todo->description); ?></td>
+		<td>[simple_todo id="<?php esc_attr_e($todo->id); ?>"]</td>
 		<td>
             <a href="#" class="btn btn-primary">Edit</a>
-            <a href="#" class="btn btn-danger">Delete</a>
+            <a href="<?php echo admin_url('admin.php?page=simple-todo&action=delete&id='. esc_html($todo->id));?>" onclick="return confirm('Are you sure ?')" class="btn btn-danger">Delete</a>
         </td>
 	</tr>
-	<tr>
-		<th scope="row">2</th>
-		<td>Jacob</td>
-		<td>Thornton</td>
-        <td>[simple_todo id="2"]</td>
-        <td>
-            <a href="#" class="btn btn-primary">Edit</a>
-            <a href="#" class="btn btn-danger">Delete</a>
-        </td>
-	</tr>
-	<tr>
-		<th scope="row">3</th>
-		<td>Larry</td>
-		<td>the Bird</td>
-        <td>[simple_todo id="3"]</td>
-        <td>
-            <a href="#" class="btn btn-primary">Edit</a>
-            <a href="#" class="btn btn-danger">Delete</a>
-        </td>
-	</tr>
+    <?php } ?>
 	</tbody>
 </table>

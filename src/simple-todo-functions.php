@@ -43,6 +43,13 @@ function simple_todo_admin_menu()
 
 function simple_todo_admin_page()
 {
+	$todos = simple_todo_get_todos();
+
+	if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+		$id = intval($_GET['id']);
+		simple_todo_detete_todo($id);
+	}
+
 	include_once SIMPLE_TODO_PLUGIN_DIR . 'src/simple-todo-table.php';
 }
 
@@ -50,4 +57,22 @@ function simple_todo_enqueue_scripts()
 {
 	wp_enqueue_style( 'simple-todo-bootstrap-min', SIMPLE_TODO_PLUGIN_URL . 'assets/css/bootstrap.min.css', array(), SIMPLE_TODO_VERSION, 'all' );
 	wp_enqueue_style( 'simple-todo-style', SIMPLE_TODO_PLUGIN_URL . 'assets/css/style.css', array(), SIMPLE_TODO_VERSION, 'all' );
+}
+
+
+function simple_todo_get_todos()
+{
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'simple_todo';
+	$sql = 'SELECT * FROM ' . $table_name . ' ORDER BY id ASC';
+	$items = $wpdb->get_results( $sql);
+
+	return $items;
+}
+
+function simple_todo_detete_todo($id)
+{
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'simple_todo';
+	$wpdb->delete( $table_name, array( 'id' => $id ) );
 }
