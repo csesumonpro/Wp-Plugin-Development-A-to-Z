@@ -2,13 +2,16 @@
 
 <form action="" method="post">
     <?php wp_nonce_field('simple-todo-nonce-action', 'simple-todo-nonce');?>
+    <input type="hidden" name="id" value="<?php isset($todo->id) ? esc_html_e($todo->id) : '';?>">
     <div class="form-group">
         <label for="exampleFormControlInput1">Title</label>
-        <input type="text" class="form-control" name="title" placeholder="title">
+        <input type="text" class="form-control" name="title" value="<?php isset($todo->title) ? esc_html_e($todo->title) : '';?>" placeholder="title">
     </div>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Description</label>
-        <textarea class="form-control" name="description" rows="3"></textarea>
+        <textarea class="form-control" name="description" rows="3">
+             <?php isset($todo->description) ? esc_html_e($todo->description) : '';?>
+        </textarea>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
     <hr>
@@ -34,7 +37,7 @@
 		<td><?php esc_html_e($todo->description); ?></td>
 		<td>[simple_todo id="<?php esc_attr_e($todo->id); ?>"]</td>
 		<td>
-            <a href="#" class="btn btn-primary">Edit</a>
+            <a href="<?php echo admin_url('admin.php?page=simple-todo&action=edit&id='. esc_html($todo->id));?>" class="btn btn-primary">Edit</a>
             <a href="<?php echo admin_url('admin.php?page=simple-todo&action=delete&id='. esc_html($todo->id));?>" onclick="return confirm('Are you sure ?')" class="btn btn-danger">Delete</a>
         </td>
 	</tr>

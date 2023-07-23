@@ -47,12 +47,23 @@ function simple_todo_admin_page()
 
 	// For insert and update
 	if (isset($_POST['simple-todo-nonce']) && wp_verify_nonce($_POST['simple-todo-nonce'], 'simple-todo-nonce-action')) {
-		simple_todo_insert_todo();
+		if (isset($_POST['id']) && $_POST['id'] != '') {
+			$id = intval($_POST['id']);
+			simple_todo_update_todo($id);
+		} else {
+			simple_todo_insert_todo();
+		}
 	}
 	// for delete
 	if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
 		$id = intval($_GET['id']);
 		simple_todo_detete_todo($id);
+	}
+
+	// for delete
+	if (isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['id'])) {
+		$id = intval($_GET['id']);
+		$todo = simple_todo_get_todo_by_id($id);
 	}
 
 	include_once SIMPLE_TODO_PLUGIN_DIR . 'src/simple-todo-table.php';
@@ -89,11 +100,40 @@ function simple_todo_insert_todo()
 
 	$title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '';
 	$description =  isset($_POST['description']) ? sanitize_textarea_field($_POST['description']) : '';
+
 	$wpdb->insert(
 		$table_name,
 		array(
 			'title' => $title,
 			'description' => $description,
 		)
+	);
+}
+
+function simple_todo_get_todo_by_id($id)
+{
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'simple_todo';
+	$sql = 'SELECT * FROM ' . $table_name . ' WHERE id = ' . $id;
+	$item = $wpdb->get_row( $sql);
+
+	return $item;
+}
+
+function simple_todo_update_todo($id)
+{
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'simple_todo';
+
+	$title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '';
+	$description =  isset($_POST['description']) ? sanitize_textarea_field($_POST['description']) : '';
+
+	$wpdb->update(
+		$table_name,
+		array(
+			'title' => $title,
+			'description' => $description,
+		),
+		array( 'id' => $id )
 	);
 }
