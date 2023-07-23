@@ -45,6 +45,11 @@ function simple_todo_admin_page()
 {
 	$todos = simple_todo_get_todos();
 
+	// For insert and update
+	if (isset($_POST['simple-todo-nonce']) && wp_verify_nonce($_POST['simple-todo-nonce'], 'simple-todo-nonce-action')) {
+		simple_todo_insert_todo();
+	}
+	// for delete
 	if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
 		$id = intval($_GET['id']);
 		simple_todo_detete_todo($id);
@@ -75,4 +80,20 @@ function simple_todo_detete_todo($id)
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'simple_todo';
 	$wpdb->delete( $table_name, array( 'id' => $id ) );
+}
+
+function simple_todo_insert_todo()
+{
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'simple_todo';
+
+	$title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '';
+	$description =  isset($_POST['description']) ? sanitize_textarea_field($_POST['description']) : '';
+	$wpdb->insert(
+		$table_name,
+		array(
+			'title' => $title,
+			'description' => $description,
+		)
+	);
 }
