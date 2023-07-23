@@ -25,3 +25,29 @@ function simple_todo_activate() {
 
 	dbDelta( $sql );
 }
+
+
+function simple_todo_admin_menu()
+{
+	add_menu_page(
+		__( 'Simple Todo', 'simple-todo' ),
+		__( 'Simple Todo', 'simple-todo' ),
+		'manage_options',
+		'simple-todo',
+		'simple_todo_admin_page',
+		'dashicons-list-view',
+		20
+	);
+}
+
+
+function simple_todo_admin_page()
+{
+	include_once SIMPLE_TODO_PLUGIN_DIR . 'src/simple-todo-table.php';
+}
+
+function simple_todo_enqueue_scripts()
+{
+	wp_enqueue_style( 'simple-todo-bootstrap-min', SIMPLE_TODO_PLUGIN_URL . 'assets/css/bootstrap.min.css', array(), SIMPLE_TODO_VERSION, 'all' );
+	wp_enqueue_style( 'simple-todo-style', SIMPLE_TODO_PLUGIN_URL . 'assets/css/style.css', array(), SIMPLE_TODO_VERSION, 'all' );
+}
