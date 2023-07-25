@@ -43,8 +43,6 @@ function simple_todo_admin_menu()
 
 function simple_todo_admin_page()
 {
-	$todos = simple_todo_get_todos();
-
 	// For insert and update
 	if (isset($_POST['simple-todo-nonce']) && wp_verify_nonce($_POST['simple-todo-nonce'], 'simple-todo-nonce-action')) {
 		if (isset($_POST['id']) && $_POST['id'] != '') {
@@ -66,13 +64,17 @@ function simple_todo_admin_page()
 		$todo = simple_todo_get_todo_by_id($id);
 	}
 
+	$todos = simple_todo_get_todos();
+
 	include_once SIMPLE_TODO_PLUGIN_DIR . 'src/simple-todo-table.php';
 }
 
 function simple_todo_enqueue_scripts()
 {
-	wp_enqueue_style( 'simple-todo-bootstrap-min', SIMPLE_TODO_PLUGIN_URL . 'assets/css/bootstrap.min.css', array(), SIMPLE_TODO_VERSION, 'all' );
-	wp_enqueue_style( 'simple-todo-style', SIMPLE_TODO_PLUGIN_URL . 'assets/css/style.css', array(), SIMPLE_TODO_VERSION, 'all' );
+	if (isset($_GET['page']) && $_GET['page'] == 'simple-todo') {
+		wp_enqueue_style( 'simple-todo-bootstrap-min', SIMPLE_TODO_PLUGIN_URL . 'assets/css/bootstrap.min.css', array(), SIMPLE_TODO_VERSION, 'all' );
+		wp_enqueue_style( 'simple-todo-style', SIMPLE_TODO_PLUGIN_URL . 'assets/css/style.css', array(), SIMPLE_TODO_VERSION, 'all' );
+	}
 }
 
 
@@ -136,4 +138,41 @@ function simple_todo_update_todo($id)
 		),
 		array( 'id' => $id )
 	);
+}
+
+function simple_todo_shortcode()
+{
+	add_shortcode( 'simple_todo', 'simple_todo_shortcode_callback' );
+}
+
+function simple_todo_shortcode_callback($atts = [], $content = null)
+{
+	// override default attributes with user attributes
+	$shortcode_atts = shortcode_atts(
+		array(
+			'id' => '',
+		), $atts);
+
+	$id = intval($shortcode_atts['id']);
+
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'simple_todo';
+
+	$sql = 'SELECT * FROM ' . $table_name . ' WHERE id = ' . $id;
+	$item = $wpdb->get_row( $sql);
+
+	wp_enqueue_style( 'simple-todo-bootstrap-min', SIMPLE_TODO_PLUGIN_URL . 'assets/css/bootstrap.min.css', array(), SIMPLE_TODO_VERSION, 'all' );
+
+	return simple_todo_load_view('simple-todo-shortcode', ['item' => $item]);
+}
+
+simple_todo_shortcode();
+
+
+function simple_todo_load_view($view, $data = [])
+{
+	extract($data);
+	ob_start();
+	include SIMPLE_TODO_PLUGIN_DIR . 'src/' . $view . '.php';
+	return ob_get_clean();
 }
